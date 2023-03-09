@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { Card } from "react-bootstrap";
-import { Navigate } from "react-router-dom";
+import { Navigate, useOutletContext } from "react-router-dom";
 
 const Home = () => {
 
+  const [log, setLog] = useOutletContext();
+
   const handleClick = () => {
     localStorage.removeItem("user");
-    return (<Navigate to="/login" />);
+    setLog(false);
+    return (<Navigate to="/login"/>);
   };
 
   return (
     <>
+    {!log && (
+      <Navigate to="/login" replace={true} />
+    )}
       {localStorage.getItem("user") ? (
         <>
           {/* {console.log(JSON.parse(localStorage.getItem("user")))} */}
