@@ -1,16 +1,39 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./routes";
-import { UserContextProvider } from "./contexts/UserContext";
-import { LoggedContextProvider } from "./contexts/LoggedContext";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "./main.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import App from "./pages/App";
+import LoginForm from "./components/login/LoginForm";
+import RegisterForm from "./components/login/RegisterForm";
+import ErrorPage from "./error/ErrorPage";
+import LightCostContainer from "./pages/lightcost/LightCostContainer";
+import { getHourlyCost } from "./helpers/fetch";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "login",
+        element: <LoginForm />,
+      },
+      {
+        path: "register",
+        element: <RegisterForm />,
+      },
+      {
+        path: "precioluz",
+        element: <LightCostContainer />,
+        loader: async () => {
+          return await getHourlyCost();
+        },
+      },
+    ],
+    errorElement: <ErrorPage />,
+  },
+]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <UserContextProvider>
-    <LoggedContextProvider>
-      <RouterProvider router={router} />
-    </LoggedContextProvider>
-  </UserContextProvider>
+  <RouterProvider index={<ErrorPage />} router={router} />
 );
